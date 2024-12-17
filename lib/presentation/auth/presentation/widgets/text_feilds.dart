@@ -54,6 +54,7 @@ class AuthTextFeilds extends StatelessWidget {
           height: 8,
         ),
         TextFormField(
+          controller: ctrl,
           cursorColor: CustomColors.greyColor,
           enabled: !isDisabled,
           textAlignVertical: TextAlignVertical.center,

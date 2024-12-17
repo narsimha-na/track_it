@@ -71,7 +71,7 @@ class IntroPages extends StatelessWidget {
                 }),
           ),
           SizedBox(
-            height: 16,
+            height: 12,
             child: SmoothPageIndicator(
               controller: controller,
               count: introSlides.length,
@@ -80,10 +80,13 @@ class IntroPages extends StatelessWidget {
                   activeDotColor: CustomColors.yellowColor),
             ),
           ),
+          SizedBox(
+            height: 28,
+          ),
           PrimaryButton(
             isWhite: true,
             onPressed: () {
-              context.goNamed(
+              context.pushNamed(
                 RouterConstants.loginPage,
               );
             },

@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class ImageFile {
   static const String imgPath = "assets/images/";
   static const String bgImgSplashPage = "${imgPath}bg.png";
@@ -17,10 +19,27 @@ class CustomColors {
   static const Color greyColor = Color(0xFFF2F1F1);
   static const Color orangeColor = Color(0xFFFD6900);
   static const Color whiteColor = Color(0xFFFFFFFF);
+  static LinearGradient bottomGradientColor = LinearGradient(
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+    colors: [
+      CustomColors.blackColor,
+      CustomColors.blackColor,
+      CustomColors.blackColor,
+      CustomColors.blackColor,
+      CustomColors.blackColor,
+      CustomColors.blackColor.withOpacity(0.5),
+      CustomColors.blackColor.withOpacity(0.0),
+    ],
+  );
 }
 
 class FontFamily {
   static const String dmSans = 'DMSans';
   static const String poppins = 'Poppins';
   static const String zk = 'ZkBlack';
+}
+
+class StorageKey {
+  static const String user = 'user';
 }

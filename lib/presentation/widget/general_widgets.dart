@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:track_it/core/cosntants.dart';
 
 class LogoWidget extends StatelessWidget {
@@ -87,5 +88,19 @@ class CustomLayout extends StatelessWidget {
             childWidget,
           ],
         ));
+  }
+}
+
+class GeneralWidgets {
+  static void toast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        fontAsset: FontFamily.poppins,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: const Color.fromARGB(255, 87, 86, 86),
+        textColor: CustomColors.whiteColor,
+        fontSize: 14.0);
   }
 }

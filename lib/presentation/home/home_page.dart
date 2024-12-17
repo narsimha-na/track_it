@@ -15,7 +15,7 @@ class HomePage extends StatelessWidget {
           style: TextStyle(
             fontFamily: FontFamily.poppins,
             fontSize: 36,
-            color: CustomColors.whiteColor,
+            color: CustomColors.blueColor,
             fontWeight: FontWeight.bold,
           ),
         ),

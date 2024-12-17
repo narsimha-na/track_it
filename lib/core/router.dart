@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:track_it/presentation/auth/intro_page.dart';
-import 'package:track_it/presentation/auth/login_page.dart';
-import 'package:track_it/presentation/auth/signup_page.dart';
-import 'package:track_it/presentation/auth/splash_page.dart';
+import 'package:track_it/presentation/auth/presentation/screens/intro_page.dart';
+import 'package:track_it/presentation/auth/presentation/screens/login_page.dart';
+import 'package:track_it/presentation/auth/presentation/screens/signup_page.dart';
+import 'package:track_it/presentation/auth/presentation/screens/splash_page.dart';
 import 'package:track_it/presentation/home/home_page.dart';
 
 class RouterConstants {
