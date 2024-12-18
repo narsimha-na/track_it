@@ -14,9 +14,11 @@ class ImageFile {
 
 class CustomColors {
   static const Color blueColor = Color(0xFF072846);
-  static const Color blackColor = Color.fromARGB(255, 13, 13, 13);
+  static const Color darkBlueColor = Color.fromARGB(255, 1, 29, 54);
+  static const Color blackColor = Color.fromARGB(255, 7, 3, 55);
   static const Color yellowColor = Color(0xFFF7B400);
   static const Color greyColor = Color(0xFFF2F1F1);
+  static const Color darkGreyColor = Color.fromARGB(255, 120, 119, 119);
   static const Color orangeColor = Color(0xFFFD6900);
   static const Color whiteColor = Color(0xFFFFFFFF);
   static LinearGradient bottomGradientColor = LinearGradient(

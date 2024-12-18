@@ -6,6 +6,8 @@ import 'package:track_it/core/cosntants.dart';
 import 'package:track_it/core/router.dart';
 import 'package:track_it/presentation/auth/cubit/auth_cubit.dart';
 import 'package:track_it/presentation/auth/data/models/signin_requested.dart';
+import 'package:track_it/presentation/auth/presentation/screens/otp_page.dart';
+import 'package:track_it/presentation/auth/presentation/widgets/bottomsheets.dart';
 import 'package:track_it/presentation/auth/presentation/widgets/text_feilds.dart';
 import 'package:track_it/presentation/widget/buttons.dart';
 import 'package:track_it/presentation/widget/general_widgets.dart';
@@ -116,22 +118,29 @@ class LoginPage extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: BlocBuilder<AuthCubit, AuthCubitState>(
-                  builder: (context, state) {
-                return PrimaryButton(
-                  isLoading: state is AuthCubitLoading,
-                  isWhite: true,
-                  onPressed: () {
-                    context.read<AuthCubit>().login(
-                          signInRequested: SignInRequested(
-                            email: emailCtrl.text,
-                            password: passwordCtrl.text,
-                          ),
-                        );
-                  },
-                  label: "Login ",
-                );
-              }),
+              child: BlocConsumer<AuthCubit, AuthCubitState>(
+                builder: (context, state) {
+                  return PrimaryButton(
+                    isLoading: state is AuthCubitLoading,
+                    isWhite: true,
+                    onPressed: () {
+                      context.read<AuthCubit>().login(
+                            context: context,
+                            signInRequested: SignInRequested(
+                              email: emailCtrl.text,
+                              password: passwordCtrl.text,
+                            ),
+                          );
+                    },
+                    label: "Login ",
+                  );
+                },
+                listener: (BuildContext context, AuthCubitState state) {
+                  if (state is AuthCubitSuccess) {
+                    context.pushNamed(RouterConstants.home);
+                  }
+                },
+              ),
             ),
           ],
         ),

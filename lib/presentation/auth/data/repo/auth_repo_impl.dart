@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/widgets.dart';
 import 'package:track_it/presentation/auth/data/repo/auth_repo.dart';
 import 'package:track_it/presentation/auth/data/exceptions/custom_exceptions.dart';
 import 'package:track_it/presentation/auth/data/models/signin_requested.dart';
@@ -8,6 +9,7 @@ import 'package:track_it/presentation/auth/data/models/singup_requested.dart';
 import 'package:track_it/presentation/auth/data/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:track_it/presentation/auth/data/models/user.dart' as userModel;
+import 'package:track_it/presentation/auth/presentation/widgets/bottomsheets.dart';
 
 class IAuthRepo implements AuthRepo {
   final FirebaseAuth firebaseAuth;
@@ -26,28 +28,21 @@ class IAuthRepo implements AuthRepo {
   Future<userModel.User> login(
       {required SignInRequested signInRequested}) async {
     try {
-      await firebaseAuth
-          .signInWithEmailAndPassword(
+      final userCredential = await firebaseAuth.signInWithEmailAndPassword(
         email: signInRequested.email,
         password: signInRequested.password,
-      )
-          .then((userCredential) {
-        dbRef
-            .child(userCredential.user!.uid)
-            .get()
-            .then((DataSnapshot user) async {
-          if (user.value == null) {
-            throw ShowException(
-                "User not found ${userCredential.toString()} ${user.value.toString()}");
-          }
-          final userMap = Map<String, dynamic>.from(user.value as Map);
-          return userModel.User.fromJson(userMap);
-        });
-      }).catchError((error) {
-        log('error: $error');
-        throw ShowException(error.toString());
-      });
-      throw const UnKnownException("Something went wrong !");
+      );
+
+      final DataSnapshot user =
+          await dbRef.child(userCredential.user!.uid).get();
+
+      if (user.value == null) {
+        throw const ShowException("User not found");
+      }
+
+      final userMap = Map<String, dynamic>.from(user.value as Map);
+
+      return userModel.User.fromJson(userMap);
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
@@ -117,6 +112,62 @@ class IAuthRepo implements AuthRepo {
         default:
           throw const UnKnownException("Something went wrong");
       }
+    }
+  }
+
+  @override
+  Future<void> sendOtp({
+    required String mobileNumber,
+    required BuildContext context,
+    required userModel.User user,
+  }) async {
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: mobileNumber,
+        verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {},
+        verificationFailed: (FirebaseAuthException error) {
+          log('error: ${error.toString()}');
+        },
+        codeSent: (String verificationId, int? forceResendingToken) {
+          log('verificationId: $verificationId');
+          // AuthBottomsheets.otpBottomSheet(
+          //   context: context,
+          //   user: user,
+          //   verificationId: verificationId,
+          // );
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
+    } catch (e) {
+      throw UnKnownException(e.toString());
+    }
+  }
+
+  @override
+  Future<bool> verifyOtp(
+      {required String otp, required String verificationId}) async {
+    try {
+      AuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: otp);
+
+      await firebaseAuth.signInWithCredential(credential);
+      return true;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'invalid-credential':
+          throw const ShowException('The verification code is invalid');
+        case 'network-request-failed':
+          throw const ShowException(
+              'Network error occurred. Please check your connection');
+        case 'too-many-requests':
+          throw const ShowException(
+              'Too many attempts. Please try again later');
+        default:
+          throw const UnKnownException(
+              'Something went wrong during verification');
+      }
+    } on Exception catch (e) {
+      throw UnKnownException(e.toString());
     }
   }
 }
