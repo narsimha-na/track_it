@@ -3,14 +3,16 @@ import 'package:lottie/lottie.dart';
 import 'package:track_it/core/cosntants.dart';
 
 class PrimaryButton extends StatelessWidget {
-  final bool isWhite;
   final Function onPressed;
   final String label;
+  final Color buttonColor;
+  final Color textColor;
   bool isLoading;
 
   PrimaryButton({
     super.key,
-    required this.isWhite,
+    this.buttonColor = CustomColors.whiteColor,
+    this.textColor = CustomColors.blueColor,
     required this.onPressed,
     required this.label,
     this.isLoading = false,
@@ -25,7 +27,7 @@ class PrimaryButton extends StatelessWidget {
       child: Container(
         height: 58,
         decoration: BoxDecoration(
-          color: isWhite ? CustomColors.whiteColor : CustomColors.blueColor,
+          color: buttonColor,
           borderRadius: BorderRadius.all(
             Radius.circular(
               12,
@@ -38,17 +40,13 @@ class PrimaryButton extends StatelessWidget {
                   height: 24,
                   width: 24,
                   child: CircularProgressIndicator(
-                    color: isWhite
-                        ? CustomColors.blueColor
-                        : CustomColors.whiteColor,
+                    color: textColor,
                   ),
                 )
               : Text(
                   label,
                   style: TextStyle(
-                    color: !isWhite
-                        ? CustomColors.whiteColor
-                        : CustomColors.blueColor,
+                    color: textColor,
                     fontSize: 18,
                     letterSpacing: 0,
                     fontFamily: FontFamily.poppins,

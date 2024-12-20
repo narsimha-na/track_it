@@ -29,7 +29,7 @@ class AuthCubit extends Cubit<AuthCubitState> {
 
   String gender = '';
   String dob = "";
-  ConfirmationResult? verificationId;
+  String? verificationId;
 
   Future<void> login({
     required SignInRequested signInRequested,
@@ -40,15 +40,20 @@ class AuthCubit extends Cubit<AuthCubitState> {
       if (!_isLoginFormValid(signInRequested: signInRequested)) {
         emit(const AuthCubitFailure(message: ''));
       } else {
-        final userModel.User user =
-            await authRepo.login(signInRequested: signInRequested);
-
-        await authRepo.sendOtp(
-          mobileNumber: user.mobileNumber.toString(),
-          context: context,
-          user: user,
-        );
-        // authDb.storeUserDetails(user);
+        await authRepo
+            .login(signInRequested: signInRequested)
+            .then((user) async {
+          sentOtp(
+            user: user,
+            context: context,
+          ).then((val) {
+            AuthBottomsheets.otpBottomSheet(
+              context: context,
+              user: user,
+              verificationId: val,
+            );
+          });
+        });
       }
     } catch (e) {
       log('error: $e');
@@ -75,19 +80,43 @@ class AuthCubit extends Cubit<AuthCubitState> {
   }
 
   Future<void> verifyOtp(
-      {required String otp, required String verificationId}) async {
-    if (otp.length != 4) {
-      emit(const AuthCubitFailure(message: 'Please enter a valid OTP'));
-    } else {
-      try {
-        await authRepo
-            .verifyOtp(otp: otp, verificationId: verificationId)
-            .then((val) {
-          emit(AuthCubitSuccess(message: 'OTP verified successfully'));
-        });
-      } catch (e) {
-        emit(AuthCubitFailure(message: e.toString()));
-      }
+      {required String otp,
+      required String verificationId,
+      required userModel.User user}) async {
+    emit(const AuthCubitLoading(message: 'Verifying OTP...'));
+    if (otp.length != 6) {
+      GeneralWidgets.toast("please enter a valid OTP");
+      return;
+    }
+
+    try {
+      await authRepo
+          .verifyOtp(otp: otp, verificationId: verificationId)
+          .then((val) {
+        authDb.storeUserDetails(user);
+        emit(AuthCubitSuccess(message: 'OTP verified successfully'));
+      });
+    } catch (e) {
+      emit(const AuthCubitFailure(message: "OTP verification failed"));
+      GeneralWidgets.toast(e.toString());
+    }
+  }
+
+  Future<String> sentOtp({
+    required userModel.User user,
+    required BuildContext context,
+  }) async {
+    try {
+      String verificationId = await authRepo.sendOtp(
+        mobileNumber: user.mobileNumber.toString(),
+        context: context,
+        user: user,
+      );
+
+      setVerificationId(verificationId);
+      return verificationId;
+    } catch (e) {
+      throw UnKnownException(e.toString());
     }
   }
 
@@ -115,5 +144,9 @@ class AuthCubit extends Cubit<AuthCubitState> {
   bool _isLoginFormValid({required SignInRequested signInRequested}) {
     return FormValidators.isEmailValid(signInRequested.email) &&
         FormValidators.isPasswordValid(signInRequested.password);
+  }
+
+  void setVerificationId(String val) {
+    verificationId = val;
   }
 }

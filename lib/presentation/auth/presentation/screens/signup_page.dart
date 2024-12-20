@@ -213,7 +213,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: BlocBuilder<AuthCubit, AuthCubitState>(
                   builder: (context, state) {
                     return PrimaryButton(
-                      isWhite: true,
                       isLoading: state is AuthCubitLoading,
                       onPressed: () {
                         context.read<AuthCubit>().signUp(

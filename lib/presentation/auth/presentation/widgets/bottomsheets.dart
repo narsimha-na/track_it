@@ -11,6 +11,8 @@ class AuthBottomsheets {
   }) {
     return showModalBottomSheet(
       context: context,
+      isDismissible: false,
+      enableDrag: false,
       barrierColor: Colors.black.withOpacity(0.5),
       builder: (context) => OtpPage(
         verificationId: verificationId,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -65,14 +66,12 @@ class IAuthRepo implements AuthRepo {
   Future<userModel.User> signUp(
       {required SignUpRequested signUpRequested}) async {
     try {
-      log('Entered signUp: ');
       await firebaseAuth
           .createUserWithEmailAndPassword(
         email: signUpRequested.email,
         password: signUpRequested.password,
       )
           .then((userCredential) async {
-        log('user auth signUp: ${userCredential.user!.uid}');
         userModel.User user = userModel.User(
           uuid: userCredential.user!.uid,
           email: userCredential.user!.email ?? '',
@@ -116,29 +115,35 @@ class IAuthRepo implements AuthRepo {
   }
 
   @override
-  Future<void> sendOtp({
+  Future<String> sendOtp({
     required String mobileNumber,
     required BuildContext context,
     required userModel.User user,
   }) async {
+    final Completer<String> verificationCompleter = Completer<String>();
+
     try {
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: mobileNumber,
+      String formattedNumber = mobileNumber;
+      if (!mobileNumber.startsWith('+')) {
+        formattedNumber = '+91$mobileNumber';
+      }
+
+      await firebaseAuth.verifyPhoneNumber(
+        phoneNumber: formattedNumber,
         verificationCompleted: (PhoneAuthCredential phoneAuthCredential) {},
         verificationFailed: (FirebaseAuthException error) {
-          log('error: ${error.toString()}');
+          log('Verification failed: ${error.toString()}');
+          throw ShowException(error.message ?? 'Phone verification failed');
         },
-        codeSent: (String verificationId, int? forceResendingToken) {
-          log('verificationId: $verificationId');
-          // AuthBottomsheets.otpBottomSheet(
-          //   context: context,
-          //   user: user,
-          //   verificationId: verificationId,
-          // );
+        codeSent: (String verificationIdVal, int? forceResendingToken) {
+          verificationCompleter.complete(verificationIdVal);
         },
         codeAutoRetrievalTimeout: (String verificationId) {},
+        timeout: const Duration(seconds: 60),
       );
+      return await verificationCompleter.future;
     } catch (e) {
+      log('SendOtp error: ${e.toString()}');
       throw UnKnownException(e.toString());
     }
   }
@@ -154,7 +159,7 @@ class IAuthRepo implements AuthRepo {
       return true;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case 'invalid-credential':
+        case 'invalid-verification-code':
           throw const ShowException('The verification code is invalid');
         case 'network-request-failed':
           throw const ShowException(

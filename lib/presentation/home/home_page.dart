@@ -6,25 +6,28 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'track.it',
-          style: TextStyle(
-            fontFamily: FontFamily.poppins,
-            fontSize: 36,
-            color: CustomColors.blueColor,
-            fontWeight: FontWeight.bold,
+    return Scaffold(
+      backgroundColor: CustomColors.blueColor,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            'track.it',
+            style: TextStyle(
+              fontFamily: FontFamily.poppins,
+              fontSize: 36,
+              color: CustomColors.whiteColor,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        Image.asset(
-          ImageFile.logo,
-          height: 48,
-          fit: BoxFit.cover,
-        ),
-      ],
+          Image.asset(
+            ImageFile.logo,
+            height: 48,
+            fit: BoxFit.cover,
+          ),
+        ],
+      ),
     );
   }
 }

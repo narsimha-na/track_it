@@ -122,7 +122,6 @@ class LoginPage extends StatelessWidget {
                 builder: (context, state) {
                   return PrimaryButton(
                     isLoading: state is AuthCubitLoading,
-                    isWhite: true,
                     onPressed: () {
                       context.read<AuthCubit>().login(
                             context: context,

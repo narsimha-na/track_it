@@ -14,7 +14,7 @@ class ImageFile {
 
 class CustomColors {
   static const Color blueColor = Color(0xFF072846);
-  static const Color darkBlueColor = Color.fromARGB(255, 1, 29, 54);
+  static const Color darkBlueColor = Color.fromARGB(255, 19, 34, 62);
   static const Color blackColor = Color.fromARGB(255, 7, 3, 55);
   static const Color yellowColor = Color(0xFFF7B400);
   static const Color greyColor = Color(0xFFF2F1F1);

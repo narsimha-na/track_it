@@ -84,13 +84,12 @@ class IntroPages extends StatelessWidget {
             height: 28,
           ),
           PrimaryButton(
-            isWhite: true,
             onPressed: () {
               context.pushNamed(
                 RouterConstants.loginPage,
               );
             },
-            label: 'Create Account',
+            label: 'Get Started',
           ),
         ],
       ),
