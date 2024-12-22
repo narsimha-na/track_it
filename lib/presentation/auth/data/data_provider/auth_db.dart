@@ -22,7 +22,7 @@ class AuthDb {
 
   Future<User> storeUserDetails(User user) async {
     try {
-      await userBox.put(user.uuid, user).then((_) {
+      await userBox.put("userDetails", user).then((_) {
         return user;
       });
       throw const ShowException('Something went wrong');

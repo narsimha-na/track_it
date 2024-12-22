@@ -94,6 +94,7 @@ class AuthCubit extends Cubit<AuthCubitState> {
           .verifyOtp(otp: otp, verificationId: verificationId)
           .then((val) {
         authDb.storeUserDetails(user);
+
         emit(AuthCubitSuccess(message: 'OTP verified successfully'));
       });
     } catch (e) {
