@@ -16,7 +16,7 @@ dependencies:
   equatable:
   flutter_secure_storage: ^9.2.2
   flutter_svg:
-  go_router:
+  go_router: ^7.0.1
   get_it:
   fluttertoast: ^8.2.10
   smooth_page_indicator: ^1.2.0+3

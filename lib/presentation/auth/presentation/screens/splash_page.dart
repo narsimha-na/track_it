@@ -24,7 +24,8 @@ class _SpalshPageState extends State<SpalshPage> {
       try {
         dbVal.getUserDetails("userDetails").then((userVal) {
           if (userVal != null) {
-            context.goNamed(RouterConstants.home);
+            context.go(
+                "/${RouterConstants.home}/${RouterConstants.analyticsPage}");
           } else {
             context.goNamed(RouterConstants.introPage);
           }
