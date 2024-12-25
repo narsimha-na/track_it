@@ -22,12 +22,14 @@ class PrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        onPressed();
+        if (!isLoading) {
+          onPressed();
+        }
       },
       child: Container(
         height: 58,
         decoration: BoxDecoration(
-          color: buttonColor,
+          color: !isLoading ? buttonColor : buttonColor.withOpacity(0.8),
           borderRadius: BorderRadius.all(
             Radius.circular(
               12,

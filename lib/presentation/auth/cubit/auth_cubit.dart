@@ -57,6 +57,7 @@ class AuthCubit extends Cubit<AuthCubitState> {
       }
     } catch (e) {
       log('error: $e');
+      GeneralWidgets.toast(e.toString());
       emit(AuthCubitFailure(message: e.toString()));
     }
   }
@@ -83,7 +84,7 @@ class AuthCubit extends Cubit<AuthCubitState> {
       {required String otp,
       required String verificationId,
       required userModel.User user}) async {
-    emit(const AuthCubitLoading(message: 'Verifying OTP...'));
+    emit(const AuthCubitOtpLoading(message: 'Verifying OTP...'));
     if (otp.length != 6) {
       GeneralWidgets.toast("please enter a valid OTP");
       return;

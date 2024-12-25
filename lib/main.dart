@@ -6,8 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:track_it/presentation/auth/cubit/auth_cubit.dart';
 import 'package:track_it/presentation/auth/data/data_provider/auth_db.dart';
+import 'package:track_it/presentation/auth/data/data_provider/auth_db.dart';
 import 'package:track_it/presentation/auth/data/models/user.dart';
 import 'package:track_it/presentation/auth/data/repo/auth_repo_impl.dart';
+import 'package:track_it/presentation/auth/presentation/screens/intro_page.dart';
 
 import 'core/router.dart';
 
@@ -27,29 +29,52 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  late AuthDb authDb;
+  late final Future<AuthDb> _authDb;
+  late final IAuthRepo authRepo;
+
   @override
   void initState() {
     super.initState();
-    startMethds();
-  }
-
-  startMethds() async {
-    authDb = await AuthDb.getInstance();
+    _authDb = AuthDb.getInstance();
+    authRepo = IAuthRepo(
+        firebaseAuth: FirebaseAuth.instance,
+        dbRef: FirebaseDatabase.instance.ref('users'));
   }
 
   @override
   Widget build(BuildContext context) {
-    final IAuthRepo authRepo = IAuthRepo(
-        firebaseAuth: FirebaseAuth.instance,
-        dbRef: FirebaseDatabase.instance.ref('users'));
+    return FutureBuilder<AuthDb>(
+        future: _authDb,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const MaterialApp(
+              home: Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return const MaterialApp(
+              home: Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          }
 
+          return _mainContent(snapshot.data);
+        });
+  }
+
+  _mainContent(AuthDb? authDb) {
     return RepositoryProvider(
       create: (context) => authRepo,
       child: BlocProvider(
         create: (context) => AuthCubit(
           authRepo: authRepo,
-          authDb: authDb,
+          authDb: authDb!,
         ),
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,

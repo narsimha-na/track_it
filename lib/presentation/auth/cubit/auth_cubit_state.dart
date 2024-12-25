@@ -15,6 +15,12 @@ final class AuthCubitLoading extends AuthCubitState {
   const AuthCubitLoading({required this.message});
 }
 
+final class AuthCubitOtpLoading extends AuthCubitState {
+  final String message;
+
+  const AuthCubitOtpLoading({required this.message});
+}
+
 final class AuthCubitSuccess extends AuthCubitState {
   final String message;
 

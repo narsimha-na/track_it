@@ -139,6 +139,7 @@ class _OtpPageState extends State<OtpPage> {
                     onPressed: () {
                       _verifyOtp();
                     },
+                    isLoading: state is AuthCubitOtpLoading,
                     label: "Verify OTP",
                   ),
                 ),
